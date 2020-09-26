@@ -1,0 +1,38 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block content %}
+
+<div class="container">
+<h1>Cadastro de colaborador</h1>
+    
+
+<form action="{{url_for('colaboratorSingUp')}}" method="POST">
+
+	{{ form.csrf_token}}
+	
+	<br><br>
+	{{ wtf.form_field(form.userName) }}
+	<br>
+	{{ wtf.form_field(form.newEmail) }}
+	
+	{% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+	
+	<br>
+	{{ wtf.form_field(form.mailConfirm) }}
+	<br>
+	{{ wtf.form_field(form.newPass) }}
+	<br>
+	{{ wtf.form_field(form.passConfirm) }}
+	<br>
+	{{form.submit}}
+
+</form>
+</div>
+
+{% endblock%}

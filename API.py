@@ -5,7 +5,7 @@ from wtforms.validators import Email, InputRequired, EqualTo, Length
 from pymongo import MongoClient
 from flask_bootstrap import Bootstrap
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, login_required
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from bson.objectid import ObjectId
 import uuid
 
@@ -62,12 +62,14 @@ class User(UserMixin):
     
     
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(_id):
     client = MongoClient("mongodb+srv://vtr363:1234@cluster0.d1wep.gcp.mongodb.net/test")
     db = client.db
-    u = db['users'].find_one({"Name": user_id})
+    u = db['users'].find_one({"_id": _id})
     if not u:
+        client.close()
         return None
+    client.close()    
     return User(u)  
     
      
@@ -220,10 +222,13 @@ def appSingUp():
 @app.route("/main")
 @login_required
 def main_pg():
-    
-    
-    
     return render_template("mainAPIpage.html")
+    
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 if __name__ == "__main__":
